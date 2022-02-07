@@ -166,7 +166,9 @@ class TextResponseDataset(Dataset):
 
 
 def main():
-	dataset = TextResponseDataset(data, data_file, proc_file, framing_topic=framing_topic)
+	if data == 'yelp_full':
+		use_bigrams = False
+	dataset = TextResponseDataset(data, data_file, proc_file, framing_topic=framing_topic, use_bigrams=use_bigrams)
 	dataset.process_dataset()
 
 if __name__ == '__main__':

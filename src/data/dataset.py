@@ -63,7 +63,7 @@ class TextResponseDataset(Dataset):
 			docs, responses = load_semantic_scholar(self.data_file, self.min_year, self.max_year)
 		elif self.dataset_name == 'yelp':
 			docs, responses = load_yelp(self.data_file, subsample=self.subsample)
-		elif self.dataset_name == 'yelp_full_tr' or 'yelp_full_te':
+		elif self.dataset_name == 'yelp_full':
 			docs, responses = load_yelp(self.data_file)
 		elif self.dataset_name == 'framing_corpus':
 			docs, responses = load_framing_corpus(self.data_file, self.framing_topic, self.annotation_file)
@@ -166,7 +166,6 @@ class TextResponseDataset(Dataset):
 
 
 def main():
-	proc_file = '../dat/proc/' + data + '_proc'
 	dataset = TextResponseDataset(data, data_file, proc_file, framing_topic=framing_topic)
 	dataset.process_dataset()
 
@@ -175,10 +174,12 @@ if __name__ == '__main__':
 	parser.add_argument("--data", action="store", default="amazon")
 	parser.add_argument("--framing_topic", action='store', default='immigration')
 	parser.add_argument("--data_file", action='store', default="../dat/reviews_Office_Products_5.json")
+	parser.add_argument("--proc_file", action='store', default="../dat/proc/amazon_proc.npz")
 
 	args = parser.parse_args()
 	data = args.data
 	framing_topic = args.framing_topic
 	data_file = args.data_file
+	proc_file = args.proc_file
 
 	main()

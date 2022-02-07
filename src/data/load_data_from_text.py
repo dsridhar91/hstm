@@ -66,6 +66,20 @@ def load_yelp(data_file, subsample=None):
 	responses = df['label'].values
 	return docs, responses
 
+def load_yelp_full(data_file):
+	train = data_file + 'train.csv'
+	test = data_file + 'test.csv'
+	train_df = pd.read_csv(train, names=['label', 'text'])
+	test_df = pd.read_csv(test, names=['label', 'text'])
+	full_df = pd.concat([train_df, test_df])
+	full_df.loc[full_df.label==1, 'label'] = 0
+	full_df.loc[full_df.label==2, 'label'] = 1
+	docs = full_df['text'].values
+	responses = full_df['label'].values
+	return docs, responses
+
+
+
 def load_peerread(data_file):
 	df = pd.read_csv(data_file)
 	docs = df['abstract_text'].values
@@ -143,12 +157,8 @@ def main(dataset, framing_topic):
 		data_file = '../dat/yelp_review_polarity_csv/train.csv'
 		doc, responses = load_yelp(data_file, 20000)
 
-	elif dataset == 'yelp_full_tr':
-		data_file = '../dat/yelp_review_polarity_csv/train.csv'
-		doc, responses = load_yelp(data_file)
-
-	elif dataset == 'yelp_full_te':
-		data_file = '../dat/yelp_review_polarity_csv/test.csv'
+	elif dataset == 'yelp_full':
+		data_file = '../dat/yelp_review_polarity_csv/'
 		doc, responses = load_yelp(data_file)
 
 	elif dataset == 'peerread':

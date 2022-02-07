@@ -27,7 +27,7 @@ class TextResponseDataset(Dataset):
 	def __init__(self, dataset_name, data_file, processed_data_file, **kwargs):
 		super(Dataset, self).__init__()
 
-		CLASSIFICATION_SETTINGS = {'peerread', 'yelp', 'yelp_full', 'amazon_binary', 'framing_corpus', 'amazon_mixed'}
+		CLASSIFICATION_SETTINGS = {'peerread', 'yelp', 'yelp_full_tr', 'yelp_full_te' 'amazon_binary', 'framing_corpus', 'amazon_mixed'}
 		self.dataset_name = dataset_name
 		self.data_file = data_file
 		self.processed_data_file = processed_data_file

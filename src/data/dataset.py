@@ -63,7 +63,7 @@ class TextResponseDataset(Dataset):
 			docs, responses = load_semantic_scholar(self.data_file, self.min_year, self.max_year)
 		elif self.dataset_name == 'yelp':
 			docs, responses = load_yelp(self.data_file, subsample=self.subsample)
-		elif self.dataset_name == 'yelp_full':
+		elif self.dataset_name == 'yelp_full_tr' or 'yelp_full_te':
 			docs, responses = load_yelp(self.data_file)
 		elif self.dataset_name == 'framing_corpus':
 			docs, responses = load_framing_corpus(self.data_file, self.framing_topic, self.annotation_file)

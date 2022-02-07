@@ -14,7 +14,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 import argparse
 
-from data.load_data_from_text import load_peerread, load_semantic_scholar, load_amazon, load_yelp, load_framing_corpus, load_mixed_corpus
+from data.load_data_from_text import load_peerread, load_semantic_scholar, load_amazon, load_yelp, load_yelp_full, load_framing_corpus, load_mixed_corpus
 
 class LemmaTokenizer:
 	def __init__(self):
@@ -64,7 +64,7 @@ class TextResponseDataset(Dataset):
 		elif self.dataset_name == 'yelp':
 			docs, responses = load_yelp(self.data_file, subsample=self.subsample)
 		elif self.dataset_name == 'yelp_full':
-			docs, responses = load_yelp(self.data_file)
+			docs, responses = load_yelp_full(self.data_file)
 		elif self.dataset_name == 'framing_corpus':
 			docs, responses = load_framing_corpus(self.data_file, self.framing_topic, self.annotation_file)
 		elif self.dataset_name == 'amazon_mixed':

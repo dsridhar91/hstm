@@ -142,42 +142,49 @@ def preprocess_ratings(ratings):
 	valid_ratings = (ratings <= 2.0) | (ratings >= 4.0)
 	return valid_ratings
 
-def main(dataset, framing_topic):
+
+def main(args):
+	data_file = args.data_file
+	out = args.outfile
+	dataset = args.data
+	framing_topic = args.framing_topic
+	seed = 12345
+
 	np.random.seed(seed)
 
 	if dataset == 'amazon':
-		if data_file = "":
+		if data_file == "":
 			data_file = '../dat/reviews_Office_Products_5.json'
 		doc,responses = load_amazon(data_file, 20000, 'reviewText', 'overall')
 
 	elif dataset == 'amazon_binary':
-		if data_file = "":
+		if data_file == "":
 			data_file = '../dat/reviews_Grocery_and_Gourmet_Food_5.json'
 		doc,responses = load_amazon(data_file, 20000, 'reviewText', 'overall', make_bool=True)
 
 	elif dataset == 'yelp':
-		if data_file = "":
+		if data_file == "":
 			data_file = '../dat/yelp_review_polarity_csv/train.csv'
 		doc, responses = load_yelp(data_file, 20000)
 
 	elif dataset == 'yelp_full':
-		if data_file = "":
+		if data_file == "":
 			data_file = '../dat/yelp_review_polarity_csv/'
-		doc, responses = load_yelp(data_file)
+		doc, responses = load_yelp_full(data_file)
 
 	elif dataset == 'peerread':
-		if data_file = "":
+		if data_file == "":
 			data_file = '../dat/peerread_abstracts.csv'
 		doc, responses = load_peerread(data_file)
 
 	elif dataset == 'framing_corpus':
-		if data_file = "":
+		if data_file == "":
 			data_file = '../dat/framing/' #+ framing_topic + '/'
 		annotation_code_file = '../dat/framing/codes.json'
 		doc, responses = load_framing_corpus(data_file, framing_topic, annotation_code_file)
 
 	else:
-		if data_file = "":
+		if data_file == "":
 			data_file = '../dat/cs_papers.gz'
 		doc, responses = load_semantic_scholar(data_file, 2010, 2016)
 
@@ -193,17 +200,17 @@ def main(dataset, framing_topic):
 	if dataset == 'framing_corpus':
 		dataset = framing_topic
 	
-	df.to_csv('../dat/csv_proc/' + dataset + '.csv')
+	if out == "":
+		out = '../dat/csv_proc/' + dataset + '.csv'
+	
+	df.to_csv(out)
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--data_file", action="store", default="")
+	parser.add_argument("--outfile", action="store", default="")
 	parser.add_argument("--data", action="store", default="amazon")
 	parser.add_argument("--framing-topic", action='store', default='immigration')
 	args = parser.parse_args()
-	data_file = args.data_file
-	dataset = args.data
-	framing_topic = args.framing_topic
-	seed = 12345
 
-	main(dataset, framing_topic)
+	main(args)

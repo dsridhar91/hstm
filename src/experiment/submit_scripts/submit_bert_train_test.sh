@@ -6,13 +6,11 @@ export OUT=/proj/sml/projects/text-response/out/yelp_full
 export LOG=/proj/sml/projects/text-response/log/yelp_full
 export DATA=yelp_full
 export TS=560000
-
-for SPLITi in $(seq 0 4); do
-    export SPLIT=${SPLITi}
+export SPLIT=0
   
-    sbatch --job-name=yelp_full_bert.${SPLITi} \
-           --output=${LOG}.bert.${SPLITi}.out \
-           experiment/submit_scripts/run_bert_train_test.sh
-done
+sbatch --job-name=yelp_full_bert \
+       --output=${LOG}.bert.out \
+       experiment/submit_scripts/run_bert_train_test.sh
+
 
 

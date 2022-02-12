@@ -24,16 +24,16 @@ class LemmaTokenizer:
 		return [t for t in word_tokenize(doc) if str.isalpha(t)]
 
 class TextResponseDataset(Dataset):
-	def __init__(self, dataset_name, data_file, processed_data_file, **kwargs):
-		super(Dataset, self).__init__()
+	CLASSIFICATION_SETTINGS = {'peerread', 'yelp', 'yelp_full', 'amazon_binary', 'framing_corpus', 'amazon_mixed'}
 
-		CLASSIFICATION_SETTINGS = {'peerread', 'yelp', 'yelp_full_tr', 'yelp_full_te' 'amazon_binary', 'framing_corpus', 'amazon_mixed'}
+	def __init__(self, dataset_name, data_file, processed_data_file, **kwargs):
+		super(Dataset, self).__init__()	
 		self.dataset_name = dataset_name
 		self.data_file = data_file
 		self.processed_data_file = processed_data_file
 
 		self.label_is_bool = False
-		if self.dataset_name in CLASSIFICATION_SETTINGS:
+		if self.dataset_name in TextResponseDataset.CLASSIFICATION_SETTINGS:
 			self.label_is_bool = True
 			
 		self.parse_args(**kwargs)

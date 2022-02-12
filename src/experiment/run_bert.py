@@ -107,9 +107,10 @@ def main(argv):
 	tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
 
 	df = pd.read_csv(FLAGS.in_file)
+	print(df.shape)
 	
 	label_is_bool = False
-	if dataset in TextResponseDataset.CLASSIFICATION_SETTINGS:
+	if FLAGS.data in TextResponseDataset.CLASSIFICATION_SETTINGS:
 		label_is_bool=True
 
 	if FLAGS.train_test_mode:
@@ -157,16 +158,16 @@ def main(argv):
 		mse = metrics.mean_squared_error(eval_targets, eval_outputs)
 
 	print("MSE:", mse, "Acc:", accuracy, "Log loss:", log_loss, "AUC:", auc)
-	os.makedirs(outdir, exist_ok=True)
-	np.save(os.path.join(outdir, 'bert.result.' + 'split'+str(split)), np.array([mse, auc, log_loss, accuracy]))
+	os.makedirs(FLAGS.outdir, exist_ok=True)
+	np.save(os.path.join(FLAGS.outdir, 'bert.result.' + 'split'+str(split)), np.array([mse, auc, log_loss, accuracy]))
 
 if __name__ == '__main__':
 	FLAGS = flags.FLAGS
-	flags.define_string("--in_file", "", "path to processed data file that contains pairs of (untokenized) text and label.")
-	flags.define_string("--data", "amazon", "name of dataset")
-	flags.define_string("--outdir", "../out/", "path to directory where output is saved.")
-	flags.define_integer("--split", 0, "for cross validation, indicates which split is used as the test split.")
-	flags.define_integer("--n_folds", 10, "for cross validation, number of splits (i.e., folds) to use.")
+	flags.DEFINE_string("in_file", "", "path to processed data file that contains pairs of (untokenized) text and label.")
+	flags.DEFINE_string("data", "amazon", "name of dataset")
+	flags.DEFINE_string("outdir", "../out/", "path to directory where output is saved.")
+	flags.DEFINE_integer("split", 0, "for cross validation, indicates which split is used as the test split.")
+	flags.DEFINE_integer("n_folds", 10, "for cross validation, number of splits (i.e., folds) to use.")
 	flags.DEFINE_integer("train_size", 10000, "number of samples to set aside for training split (only valid if train/test setting is used)")
 	flags.DEFINE_boolean("train_test_mode", False, "flag to use to run a train/test experiment instead of cross validation (default).")
 	app.run(main)

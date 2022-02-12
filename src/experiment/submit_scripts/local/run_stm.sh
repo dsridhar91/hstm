@@ -1,0 +1,13 @@
+python -m experiment.run_experiment \
+--model=stm \
+--procfile=../dat/proc/framing_corpus_samesex_proc.npz \
+--data=framing_corpus \
+--framing_topic=samesex \
+--pretraining_file=../dat/proc/framing_corpus_samesex_pretraining.npz \
+--C=1e-4 \
+--num_topics=10 \
+--split=0 \
+--num_folds=10 \
+--epochs=30 \
+--pretrained \
+--print_latex

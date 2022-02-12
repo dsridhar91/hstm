@@ -138,6 +138,7 @@ class ModelTrainer():
 						acc_loss = torch.sum(recon_loss).item()
 						acc_kl_theta_loss = torch.sum(kld_theta).item()
 						print("Epoch:", epoch, "Acc. loss:", acc_loss, "KL loss.:", acc_kl_theta_loss)
+						sys.stdout.flush()
 
 
 		for epoch in range(epochs):
@@ -164,6 +165,7 @@ class ModelTrainer():
 					acc_kl_theta_loss = torch.sum(kld_theta).item()
 					acc_sup_loss = torch.sum(supervised_loss).item()
 					print("Epoch:", epoch, "Acc. loss:", acc_loss, "KL loss.:", acc_kl_theta_loss, "Supervised loss:", acc_sup_loss)
+					sys.stdout.flush()
 
 
 		if self.do_finetuning:
@@ -193,6 +195,7 @@ class ModelTrainer():
 						acc_kl_theta_loss = torch.sum(kld_theta).item()
 						acc_sup_loss = torch.sum(supervised_loss).item()
 						print("Epoch:", epoch, "Acc. loss:", acc_loss, "KL loss.:", acc_kl_theta_loss, "Supervised loss:", acc_sup_loss)
+						sys.stdout.flush()
 
 	def reset_model_parameters(self, data, param_name):
 		data_tensor = torch.tensor(data, dtype=torch.float)

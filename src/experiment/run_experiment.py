@@ -65,7 +65,7 @@ def main(argv):
 
 	if FLAGS.train_test_mode:
 		tr_indices = np.arange(0, FLAGS.train_size)
-		te_indices = np.arange(FLAGS.train_size+1, n_docs)
+		te_indices = np.arange(FLAGS.train_size+1, total_docs)
 	else:
 		split_indices = util.cross_val_splits(total_docs, num_splits=FLAGS.num_folds)
 		all_indices = np.arange(total_docs)

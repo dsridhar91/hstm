@@ -2,6 +2,7 @@
 #SBATCH -A sml
 #SBATCH -c 8
 #SBATCH --mail-user=dhanya.sridhar@columbia.edu
+#SBATCH --exclude=yolanda
 #SBATCH --mail-type=ALL
 #SBATCH --gres=gpu:1
 

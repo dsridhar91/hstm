@@ -35,11 +35,8 @@ class TextResponseDataset(Dataset):
 		self.label_is_bool = False
 		if self.dataset_name in CLASSIFICATION_SETTINGS:
 			self.label_is_bool = True
-
-
+			
 		self.parse_args(**kwargs)
-		self.process_dataset()
-		self.preprocessing()
 
 	def parse_args(self, **kwargs):
 		self.min_year = int(kwargs.get('min_year', 2010))
@@ -166,8 +163,10 @@ class TextResponseDataset(Dataset):
 
 
 def main():
+	use_bigrams = True
 	if data == 'yelp_full':
 		use_bigrams = False
+	
 	dataset = TextResponseDataset(data, data_file, proc_file, framing_topic=framing_topic, use_bigrams=use_bigrams)
 	dataset.process_dataset()
 

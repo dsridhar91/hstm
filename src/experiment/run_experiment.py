@@ -58,12 +58,21 @@ def main(argv):
 	else:
 		text_dataset = TextResponseDataset(FLAGS.data, FLAGS.datafile, proc_file)
 
+	text_dataset.process_dataset()
+	text_dataset.preprocessing()
+
 	total_docs = text_dataset.get_full_size()
-	split_indices = util.cross_val_splits(total_docs)
-	all_indices = np.arange(total_docs)
+
+	if FLAGS.train_test_mode:
+		tr_indices = np.arange(0, FLAGS.train_size)
+		te_indices = np.arange(FLAGS.train_size+1, n_docs)
+	else:
+		split_indices = util.cross_val_splits(total_docs, num_splits=FLAGS.num_folds)
+		all_indices = np.arange(total_docs)
 	
-	te_indices = split_indices[FLAGS.split]
-	tr_indices = np.setdiff1d(all_indices, te_indices)
+		te_indices = split_indices[FLAGS.split]
+		tr_indices = np.setdiff1d(all_indices, te_indices)
+	
 	text_dataset.assign_splits(tr_indices, te_indices)
 
 	train_params = {'batch_size': FLAGS.batch_size,
@@ -73,6 +82,7 @@ def main(argv):
 	training_dataloader = DataLoader(text_dataset, **train_params)
 	vocab_size = text_dataset.get_vocab_size()
 	n_docs = len(text_dataset)
+	
 
 	if FLAGS.model == 'prodlda':
 		model = topic_model.TopicModel(num_topics, vocab_size, n_docs, 
@@ -81,7 +91,8 @@ def main(argv):
 	elif FLAGS.model == 'slda':
 		model = slda.SupervisedLDA(num_topics, vocab_size, n_docs,
 			label_is_bool=label_is_bool,
-			beta_init=beta)
+			beta_init=beta,
+			predict_with_z=True)
 	else:
 		model = adjusted_hstm.HeterogeneousSupervisedTopicModel(num_topics, vocab_size, n_docs, 
 		beta_init=beta, 
@@ -180,13 +191,15 @@ if __name__ == '__main__':
 	flags.DEFINE_float("C", 1e-6, "l1 penalty for BoW weights and base rates.")
 	flags.DEFINE_float("C_topics", 1e-6, "l1 penalty for gammas.")
 	
+	flags.DEFINE_integer("train_size", 10000, "number of samples to set aside for training split (only valid if train/test setting is used)")
 	flags.DEFINE_integer("num_topics", 50, "number of topics to use.")
 	flags.DEFINE_integer("batch_size", 512, "batch size to use in training.")
-	flags.DEFINE_integer("split", 0, "split to run experiment.")
-	flags.DEFINE_integer("num_folds", 10, "number of splits.")
+	flags.DEFINE_integer("split", 0, "split to use as the test data in cross-fold validation.")
+	flags.DEFINE_integer("num_folds", 10, "number of splits for cross-fold validation (i.e. K in K-fold CV).")
 	flags.DEFINE_integer("epochs", 10, "number of epochs for training.")
 	flags.DEFINE_integer("extra_epochs", 10, "number of extra epochs to train supervised model.")
 	
+	flags.DEFINE_boolean("train_test_mode", False, "flag to use to run a train/test experiment instead of cross validation (default).")
 	flags.DEFINE_boolean("pretrained", False, "flag to use pretrained LDA topics or not.")
 	flags.DEFINE_boolean("pretrained_prodlda", False, "flag to use pretrained ProdLDA topics or not.")
 	flags.DEFINE_boolean("do_pretraining_stage", False, "flag to run sgd steps for topic model only.")

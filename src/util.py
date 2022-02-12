@@ -18,3 +18,9 @@ def cross_val_splits(num_docs, num_splits=10, seed=42):
 	split_indices = [indices[i*split_size:(i+1)*split_size] for i in range(num_splits-1)]
 	split_indices.append(indices[(num_splits-1)*split_size:])
 	return split_indices
+
+def get_cv_split_assignments(num_docs, num_splits=10, seed=42):
+	np.random.seed(seed)
+	indices = np.arange(num_docs)
+	np.random.shuffle(indices)
+	return indices

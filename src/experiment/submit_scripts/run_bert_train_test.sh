@@ -9,4 +9,5 @@ python -m experiment.run_bert \
 --in_file=${PROC} \
 --data=${DATA} \
 --outdir=${OUT} \
---split=${SPLIT}
+--train_size=${TS} \
+--train_test_mode

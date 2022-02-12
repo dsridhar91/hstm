@@ -9,15 +9,14 @@ source activate py3.6
 
 python -m experiment.run_experiment \
 --model=${MODEL} \
---pretraining_file=${PRE} \
 --procfile=${PROC} \
 --data=${DATA} \
 --outdir=${OUT} \
---split=${SPLIT} \
 --C=${C} \
 --C_topics=${CTOPICS} \
---pretrained_prodlda \
+--train_size=${TS} \
 --epochs=30 \
---do_finetuning \
 --extra_epochs=10 \
---framing_topic=${TOPIC}
+--do_pretraining_stage \
+--do_finetuning \
+--train_test_mode

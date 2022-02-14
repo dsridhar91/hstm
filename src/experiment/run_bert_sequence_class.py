@@ -3,7 +3,7 @@ import pandas as pd
 import torch
 import transformers
 from torch.utils.data import Dataset, DataLoader
-from transformers import BertModel, BertTokenizer
+from transformers import BertModel, BertTokenizer, BertForSequenceClassification
 import numpy as np
 import argparse
 from sklearn import metrics
@@ -72,9 +72,10 @@ def train(model, training_loader, epoch, lr=1e-5, label_is_bool=True):
 		mask = data['mask'].to(device, dtype = torch.long)
 		targets = data['targets'].to(device, dtype = torch.float)
 
-		outputs = model(ids, mask).squeeze()
+		outputs = model(ids, mask)
 		optimizer.zero_grad()
-		loss = loss_function(outputs, targets)
+		logits = outputs.logits
+		loss = loss_function(logits, targets)
 		if _%5000==0:
 			print(f'Epoch: {epoch}, Loss:  {loss.item()}', flush=True)
 		
@@ -91,7 +92,8 @@ def valid(model, testing_loader, label_is_bool=False):
 			ids = data['ids'].to(device, dtype = torch.long)
 			mask = data['mask'].to(device, dtype = torch.long)
 			targets = data['targets'].to(device, dtype = torch.float)
-			outputs = model(ids, mask).squeeze()
+			outputs = model(ids, mask)
+			logits = outputs.logits
 			if label_is_bool:
 				outputs = torch.sigmoid(outputs)
 			eval_targets += targets.cpu().detach().numpy().tolist()
@@ -100,11 +102,11 @@ def valid(model, testing_loader, label_is_bool=False):
 
 def main(argv):
 	MAX_LEN = 128
-	TRAIN_BATCH_SIZE = 16
-	VALID_BATCH_SIZE = 16
-	EPOCHS = 5
-	LEARNING_RATE = 5e-05
-	tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
+	TRAIN_BATCH_SIZE = 32
+	VALID_BATCH_SIZE = 32
+	EPOCHS = 10
+	LEARNING_RATE = 1e-05
+	tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
 
 	df = pd.read_csv(FLAGS.in_file)
 
@@ -138,7 +140,8 @@ def main(argv):
 	training_loader = DataLoader(training_set, **train_params)
 	testing_loader = DataLoader(testing_set, **test_params)
 
-	model = BERTClass()
+	model = BertForSequenceClassification.from_pretrained("bert-base-uncased")
+	# model = BERTClass()
 	model.to(device)
 
 	for epoch in range(EPOCHS):

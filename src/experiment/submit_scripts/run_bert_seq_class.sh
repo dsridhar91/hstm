@@ -6,7 +6,7 @@
 
 source activate py3.6
 
-python -m experiment.run_bert \
+python -m experiment.run_bert_sequence_class \
 --in_file=${PROC} \
 --data=${DATA} \
 --outdir=${OUT} \

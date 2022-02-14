@@ -167,7 +167,7 @@ if __name__ == '__main__':
 	flags.DEFINE_integer("train_size", 10000, "number of samples to set aside for training split (only valid if train/test setting is used)")
 	flags.DEFINE_integer("max_len", 128, "max length of sequences -- longer sequences will be trimmed.")
 	flags.DEFINE_integer("batch_size", 32, "batch size for training and evaluation.")
-	flags.DEFINE_integer("epochs", 10, "number of full passes to do over dataset when training.")
+	flags.DEFINE_integer("epochs", 5, "number of full passes to do over dataset when training.")
 
 	flags.DEFINE_float("learning_rate", 1e-5, "optimization learning rate.")
 	

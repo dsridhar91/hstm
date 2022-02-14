@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-#SBATCH -A sml
 #SBATCH -c 8
 #SBATCH --gres=gpu:1
 

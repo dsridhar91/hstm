@@ -137,9 +137,6 @@ class HeterogeneousSupervisedTopicModel(nn.Module):
 		weights = torch.mm(theta, scaled_beta.t())
 
 		if self.response_model == 'stm':
-			# expected_z = torch.einsum('ik,kj->ikj', [theta, self.logit_betas.t()])
-			# features = expected_z.mean(dim=-1)
-			# expected_pred = self.topic_weights(features).squeeze()
 			expected_pred = self.topic_weights(theta).squeeze()
 		elif self.response_model == 'stm+bow':
 			expected_pred = self.topic_weights(theta).squeeze() + self.bow_weights(bows).squeeze()
@@ -158,13 +155,6 @@ class HeterogeneousSupervisedTopicModel(nn.Module):
 							+ self.bow_weights(bows).squeeze() + self.topic_weights(theta).squeeze()
 		return expected_pred
 
-	def apply_attention_smoothing(self, theta):
-		embedding = self.gammas * self.logit_betas
-		similarity = torch.mm(embedding, embedding.t())
-		vals = self.smoothing * self.gammas
-		self.attn = F.softmax(similarity, dim=-1)
-		smoothed = torch.mm(self.attn, vals) #0.5*self.gammas + 0.5*torch.mm(self.attn, vals)
-		return smoothed
 		
 	def forward(self, bows, normalized_bows, labels, theta=None, do_prediction=True, penalty_bow=True, penalty_gamma=True):
 		if self.is_bool:
@@ -179,7 +169,6 @@ class HeterogeneousSupervisedTopicModel(nn.Module):
 			preds = self.decode(theta)
 			recon_loss = -(preds * bows).sum(1).mean()
 			other_loss = get_l1_loss(self.base_rates, C=self.C_weights)
-			# other_loss += get_l1_loss(self.logit_betas, C=self.C_weights)
 		else:
 			recon_loss = torch.tensor([0.0], dtype=torch.float, device=device)
 			kld_theta = torch.tensor([0.0], dtype=torch.float, device=device)

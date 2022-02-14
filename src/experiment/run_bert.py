@@ -76,7 +76,7 @@ def train(model, training_loader, epoch, lr=1e-5, label_is_bool=True):
 		optimizer.zero_grad()
 		loss = loss_function(outputs, targets)
 		if _%5000==0:
-			print(f'Epoch: {epoch}, Loss:  {loss.item()}')
+			print(f'Epoch: {epoch}, Loss:  {loss.item()}', flush=True)
 		
 		optimizer.zero_grad()
 		loss.backward()
@@ -100,22 +100,21 @@ def valid(model, testing_loader, label_is_bool=False):
 
 def main(argv):
 	MAX_LEN = 128
-	TRAIN_BATCH_SIZE = 32
-	VALID_BATCH_SIZE = 32
-	EPOCHS = 10
-	LEARNING_RATE = 1e-05
+	TRAIN_BATCH_SIZE = 16
+	VALID_BATCH_SIZE = 16
+	EPOCHS = 5
+	LEARNING_RATE = 5e-05
 	tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
 
 	df = pd.read_csv(FLAGS.in_file)
-	print(df.shape)
-	
+
 	label_is_bool = False
 	if FLAGS.data in TextResponseDataset.CLASSIFICATION_SETTINGS:
 		label_is_bool=True
 
 	if FLAGS.train_test_mode:
-		train_dataset = df.iloc[:FLAGS.train_size]
-		test_dataset = df.iloc[FLAGS.train_size+1:]
+		train_dataset = df.iloc[:FLAGS.train_size].reset_index(drop=True)
+		test_dataset = df.iloc[FLAGS.train_size+1:].reset_index(drop=True)
 	else:
 		n_docs = df.shape[0]
 		df['split'] = get_cv_split_assignments(n_docs, num_splits=FLAGS.n_folds)

@@ -158,6 +158,8 @@ def main(argv):
 
 	if FLAGS.model in {'hstm-all', 'stm+bow', 'hstm-nobeta'}:
 		bow_str = evaluator.visualize_word_weights(num_words=7)
+	else:
+		bow_str = "No BoW weights to report."
 
 	if FLAGS.model in {'hstm', 'hstm-all', 'hstm-nobeta'}:
 		pos_topics_str = evaluator.visualize_supervised_topics(normalize=True, pos_topics=True, format_pretty=True, compare_to_bow=False, num_words=7)

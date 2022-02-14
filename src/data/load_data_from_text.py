@@ -78,8 +78,6 @@ def load_yelp_full(data_file):
 	responses = full_df['label'].values
 	return docs, responses
 
-
-
 def load_peerread(data_file):
 	df = pd.read_csv(data_file)
 	docs = df['abstract_text'].values

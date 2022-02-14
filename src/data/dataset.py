@@ -27,7 +27,7 @@ class TextResponseDataset(Dataset):
 	CLASSIFICATION_SETTINGS = {'peerread', 'yelp', 'yelp_full', 'amazon_binary', 'framing_corpus', 'amazon_mixed'}
 
 	def __init__(self, dataset_name, data_file, processed_data_file, **kwargs):
-		super(Dataset, self).__init__()	
+		super(Dataset, self).__init__()
 		self.dataset_name = dataset_name
 		self.data_file = data_file
 		self.processed_data_file = processed_data_file
@@ -35,6 +35,8 @@ class TextResponseDataset(Dataset):
 		self.label_is_bool = False
 		if self.dataset_name in TextResponseDataset.CLASSIFICATION_SETTINGS:
 			self.label_is_bool = True
+
+		self.eval_mode=False
 			
 		self.parse_args(**kwargs)
 
@@ -111,6 +113,9 @@ class TextResponseDataset(Dataset):
 		self.vocab = vocab
 		self.labels = responses
 		self.docs = docs
+
+	def set_to_eval_mode(self):
+		self.eval_mode = True
 		
 	def preprocessing(self):
 		term_total = self.counts.sum(axis=1)
@@ -146,13 +151,22 @@ class TextResponseDataset(Dataset):
 			self.te_pretrained_theta = None
 
 	def __getitem__(self, idx):
-		datadict = {
-				'normalized_bow':torch.tensor(self.tr_normalized_counts[idx,:], dtype=torch.float),
-				'bow':torch.tensor(self.tr_counts[idx,:], dtype=torch.long),
-				'label':torch.tensor(self.tr_labels[idx], dtype=torch.float)
-			}
-		if self.tr_pretrained_theta is not None:
-			datadict.update({'pretrained_theta':torch.tensor(self.tr_pretrained_theta[idx,:], dtype=torch.float)})
+		if not self.eval_mode:
+			datadict = {
+					'normalized_bow':torch.tensor(self.tr_normalized_counts[idx,:], dtype=torch.float),
+					'bow':torch.tensor(self.tr_counts[idx,:], dtype=torch.long),
+					'label':torch.tensor(self.tr_labels[idx], dtype=torch.float)
+				}
+			if self.tr_pretrained_theta is not None:
+				datadict.update({'pretrained_theta':torch.tensor(self.tr_pretrained_theta[idx,:], dtype=torch.float)})
+		else:
+			datadict = {
+					'normalized_bow':torch.tensor(self.te_normalized_counts[idx,:], dtype=torch.float),
+					'bow':torch.tensor(self.te_counts[idx,:], dtype=torch.long),
+					'label':torch.tensor(self.te_labels[idx], dtype=torch.float)
+				}
+			if self.te_pretrained_theta is not None:
+				datadict.update({'pretrained_theta':torch.tensor(self.te_pretrained_theta[idx,:], dtype=torch.float)})
 		return datadict
 
 	def __len__(self):

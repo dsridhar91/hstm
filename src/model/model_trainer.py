@@ -231,7 +231,6 @@ class ModelTrainer():
 
 		return recon_loss
 
-
 	def evaluate_heldout_prediction(self, test_counts, test_labels, theta=None):
 		make_eval_metrics = True
 		if len(test_counts.shape) == 1:
@@ -249,10 +248,7 @@ class ModelTrainer():
 				theta = torch.tensor(theta, dtype=torch.float, device=device)
 			else:
 				theta, _ = self.model.get_theta(test_normalized_bow)
-			# if self.model_name == 'slda':
-			# 	_ = self.model.decode(theta)
-			# 	predictions = self.model.predict_labels(theta).cpu().detach().numpy()
-			# else:	
+
 			if self.model_name == 'slda':
 				_ = self.model.decode(theta)
 

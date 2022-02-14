@@ -99,12 +99,7 @@ def valid(model, testing_loader, label_is_bool=False):
 	return np.array(eval_outputs), np.array(eval_targets)
 
 def main(argv):
-	MAX_LEN = 128
-	TRAIN_BATCH_SIZE = 16
-	VALID_BATCH_SIZE = 16
-	EPOCHS = 5
-	LEARNING_RATE = 5e-05
-	tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
+	tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
 	df = pd.read_csv(FLAGS.in_file)
 
@@ -122,15 +117,15 @@ def main(argv):
 		train_dataset = df[df.split!=FLAGS.split].reset_index(drop=True)
 		test_dataset = df[df.split==FLAGS.split].reset_index(drop=True)
 	
-	training_set = ProcDataset(train_dataset, tokenizer, MAX_LEN)
-	testing_set = ProcDataset(test_dataset, tokenizer, MAX_LEN)
+	training_set = ProcDataset(train_dataset, tokenizer, FLAGS.max_len)
+	testing_set = ProcDataset(test_dataset, tokenizer, FLAGS.max_len)
 
-	train_params = {'batch_size': TRAIN_BATCH_SIZE,
+	train_params = {'batch_size': FLAGS.batch_size,
 					'shuffle': True,
 					'num_workers': 0
 					}
 
-	test_params = {'batch_size': VALID_BATCH_SIZE,
+	test_params = {'batch_size': FLAGS.batch_size,
 					'shuffle': True,
 					'num_workers': 0
 					}
@@ -141,8 +136,8 @@ def main(argv):
 	model = BERTClass()
 	model.to(device)
 
-	for epoch in range(EPOCHS):
-		train(model, training_loader, epoch, lr=LEARNING_RATE, label_is_bool=label_is_bool)
+	for epoch in range(FLAGS.epochs):
+		train(model, training_loader, epoch, lr=FLAGS.learning_rate, label_is_bool=label_is_bool)
 
 	print("testing..")
 	eval_outputs, eval_targets = valid(model, testing_loader, label_is_bool=label_is_bool)
@@ -166,8 +161,15 @@ if __name__ == '__main__':
 	flags.DEFINE_string("in_file", "", "path to processed data file that contains pairs of (untokenized) text and label.")
 	flags.DEFINE_string("data", "amazon", "name of dataset")
 	flags.DEFINE_string("outdir", "../out/", "path to directory where output is saved.")
+
 	flags.DEFINE_integer("split", 0, "for cross validation, indicates which split is used as the test split.")
 	flags.DEFINE_integer("n_folds", 10, "for cross validation, number of splits (i.e., folds) to use.")
 	flags.DEFINE_integer("train_size", 10000, "number of samples to set aside for training split (only valid if train/test setting is used)")
+	flags.DEFINE_integer("max_len", 128, "max length of sequences -- longer sequences will be trimmed.")
+	flags.DEFINE_integer("batch_size", 32, "batch size for training and evaluation.")
+	flags.DEFINE_integer("epochs", 10, "number of full passes to do over dataset when training.")
+
+	flags.DEFINE_float("learning_rate", 1e-5, "optimization learning rate.")
+	
 	flags.DEFINE_boolean("train_test_mode", False, "flag to use to run a train/test experiment instead of cross validation (default).")
 	app.run(main)

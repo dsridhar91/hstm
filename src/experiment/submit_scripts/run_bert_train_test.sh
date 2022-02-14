@@ -11,4 +11,6 @@ python -m experiment.run_bert \
 --data=${DATA} \
 --outdir=${OUT} \
 --train_size=${TS} \
+--batch_size=16 \
+--epochs=3 \
 --train_test_mode

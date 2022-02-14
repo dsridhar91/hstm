@@ -23,4 +23,13 @@ def get_cv_split_assignments(num_docs, num_splits=10, seed=42):
 	np.random.seed(seed)
 	indices = np.arange(num_docs)
 	np.random.shuffle(indices)
-	return indices
+
+	split_size = (num_docs // num_splits)
+	split_indices = [indices[i*split_size:(i+1)*split_size] for i in range(num_splits-1)]
+	split_indices.append(indices[(num_splits-1)*split_size:])
+
+	split_assignment = np.zeros(num_docs)
+	for (s_idx, inds) in enumerate(split_indices):
+		split_assignment[inds]=s_idx
+
+	return split_assignment

@@ -1,3 +1,4 @@
+import sys
 import os
 import pandas as pd
 import torch
@@ -109,14 +110,13 @@ def main(argv):
 
 	if FLAGS.train_test_mode:
 		train_dataset = df.iloc[:FLAGS.train_size].reset_index(drop=True)
-		test_dataset = df.iloc[FLAGS.train_size+1:].reset_index(drop=True)
-
+		test_dataset = df.iloc[FLAGS.train_size:].reset_index(drop=True)
 	else:
 		n_docs = df.shape[0]
 		df['split'] = get_cv_split_assignments(n_docs, num_splits=FLAGS.n_folds)
 		train_dataset = df[df.split!=FLAGS.split].reset_index(drop=True)
 		test_dataset = df[df.split==FLAGS.split].reset_index(drop=True)
-	
+
 	training_set = ProcDataset(train_dataset, tokenizer, FLAGS.max_len)
 	testing_set = ProcDataset(test_dataset, tokenizer, FLAGS.max_len)
 

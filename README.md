@@ -60,13 +60,16 @@ First, run
 ```bash
 ./experiments/submit_scripts/submit_hyperparam.sh
 ```
-This runs the experiments for HSTM and its variants (used in the ablation study).
+This runs the experiments for HSTM and its variants (used in the ablation study). The STM variant is closely related to [3], when they use inferred topics
+in a supervised model of labels. Many of the modeling choices are the same; one difference is that we initialize the log topics using LDA as we do with HSTMs, for a fair comparison.
 
 Next, run
 ```bash
 ./experiments/submit_scripts/submit_bert.sh
 ```
-This runs the fine-tuned BERT model for classification (or regression).
+This runs the fine-tuned BERT model for classification (or regression) [4]. We use the BERT model implemented here:
+```https://huggingface.co/transformers/v2.11.0/model_doc/bert.html```
+To make predictions with this model, we take the average of a sequence's final layer token embeddings, and apply a linear map to this per-sequence processed embedding to obtain either the logit prediction or the prediction.
 
 Then, run
 ```bash
@@ -124,3 +127,6 @@ We recommend stepping through the scripts we used to produce tables 1 and 2 (in 
 
 **References**
 - [2] Mcauliffe, J. and Blei, D., 2007. _Supervised topic models_. In NeurIPS.
+- [3] Card, D., Tan, C., and Smith, N.A., 2017. _Neural Models for Documents with Metadata_. In NAACL.
+- [4] Devlin, J., Chang, M.W., Lee, K. and Toutanova, K., 2018. _Bert: Pre-training of deep bidirectional transformers for language understanding_. arXiv preprint arXiv:1810.04805.
+

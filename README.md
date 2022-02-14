@@ -7,6 +7,8 @@ This repository contains the code and demo data for:
 
 If you use this code please cite [1]. 
 
+**Abstract**
+
 Researchers in the social sciences are often interested in the relationship between text and an outcome of interest, where the goal is to both uncover latent patterns in the text and predict outcomes for unseen texts. To this end, this paper develops the heterogeneous supervised topic models (HSTM), a probabilistic approach to text analysis and prediction. HSTMs posit a joint model of text and outcomes to find heterogeneous patterns that help with both text analysis and prediction. The main benefit of HSTMs is that they capture heterogeneity in the relationship between text and the outcome across latent topics. To fit HSTMs, we develop a variational inference algorithm based on the auto-encoding variational Bayes framework. We study the performance of HSTMs on eight datasets and find that they consistently outperform related methods, including fine-tuned black box models. Finally, we apply HSTMs to analyze news articles labeled with pro- or anti-tone. We find evidence of differing language used to signal a pro- and anti-tone.
 
 **Requirements** 
@@ -46,24 +48,24 @@ We've included processed input files for the eight datasets on which we reported
 To run BERT, we've also included processed input files formatted as a CSV with the raw text and label as columns. This is under:
 ```dat/csv_proc/```
 
-Soon, we'll provide instructions for downloading the unprocessed, raw datasets. Using Amazon as an example, raw data can be processed with our code by running
+Soon, we'll support downloading the unprocessed, raw datasets. Using Amazon as an example, raw data can be processed with our code by running:
 ```bash
 python -m data.dataset --data=amazon --data_file=../dat/reviews_Office_Products_5.json
 ``` 
-assuming that the raw data files are stored where --data_file points.
+This assumes that the raw data files are stored where --data_file points.
 
 **Reproducing predictive performance and ablation studies**
 
 To reproduce the results in tables 1 and 2 in the paper, execute the following steps.
 
-First, run
+First, run:
 ```bash
 ./experiments/submit_scripts/submit_hyperparam.sh
 ```
 This runs the experiments for HSTM and its variants (used in the ablation study). The STM variant is closely related to [3], when they use inferred topics
 in a supervised model of labels. Many of the modeling choices are the same; one difference is that we initialize the log topics using LDA as we do with HSTMs, for a fair comparison.
 
-Next, run
+Next, run:
 ```bash
 ./experiments/submit_scripts/submit_bert.sh
 ```
@@ -71,7 +73,7 @@ This runs the fine-tuned BERT model for classification (or regression) [4]. We u
 ```https://huggingface.co/transformers/v2.11.0/model_doc/bert.html```
 To make predictions with this model, we take the average of a sequence's final layer token embeddings, and apply a linear map to this per-sequence processed embedding to obtain either the logit prediction or the prediction.
 
-Then, run
+Then, run:
 ```bash
 ./experiments/submit_scripts/submit_slda.sh
 ```
@@ -79,7 +81,7 @@ This runs our auto-encoding variational Bayes implementation of supervised LDA [
 
 The outputs from the experiment will saved under ```out/``` across several subdirectories. The details can be found by tracing through the submit scripts and ```src/experiment/run_experiment.py```.
 
-Finally, run
+Finally, run:
 ```bash
 jupyter notebook
 ```
@@ -90,7 +92,7 @@ and play through both ```run_baselines.ipynb``` and ```process_results.ipynb```.
 This repository also supports fitting HSTMs for your own text data. It requires a few steps. 
 As a running example, suppose your setting is called ```myDataset```.
 
-First, you'll neeed to implement a function in ```data/load_data_from_text.py``` that processes your raw text and labels and returns two array objects,
+First, you'll neeed to implement a function in ```data/load_data_from_text.py``` that processes your raw text and labels and returns two array objects:
 ```
 tuple(np.array, np.array)
 ```
@@ -98,7 +100,7 @@ The first must be an array of texts (string) and the second is an array of label
 
 _Note_: The code is currently written to support 0/1 labels and real-valued labels.
 
-Second, you'll need to minimally modify ```data/dataset.py```. To the import statement on line [17], add your newly created function
+Second, you'll need to minimally modify ```data/dataset.py```. To the import statement on line [17], add your newly created function:
 ```bash
 from data.load_data_from_text import ..., load_myDataset
 ```
@@ -117,7 +119,7 @@ python -m experiment.run_experiment --help
 ```
 For example, take note of flags like ```num_topics, train_test_mode, train_size, C, C_topics```. These tend to be dataset specific. You may need to add new flags to support any special arguments your ```load_myDataset``` function. 
 
-Finally, you can run
+Finally, you can run:
 ```bash
 python -m experiment.run_experiment --data=mySetting --model=hstm-all
 ```

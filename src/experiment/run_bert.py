@@ -154,7 +154,7 @@ def main(argv):
 
 	print("MSE:", mse, "Acc:", accuracy, "Log loss:", log_loss, "AUC:", auc)
 	os.makedirs(FLAGS.outdir, exist_ok=True)
-	np.save(os.path.join(FLAGS.outdir, 'bert.result.' + 'split'+str(split)), np.array([mse, auc, log_loss, accuracy]))
+	np.save(os.path.join(FLAGS.outdir, 'bert.result.' + 'split'+str(FLAGS.split)), np.array([mse, auc, log_loss, accuracy]))
 
 if __name__ == '__main__':
 	FLAGS = flags.FLAGS

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+#SBATCH -A sml
+#SBATCH --exclude=yolanda
 #SBATCH -c 8
 #SBATCH --gres=gpu:1
 

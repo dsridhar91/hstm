@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 #SBATCH -c 8
 #SBATCH --gres=gpu:1
-#SBATCH -A sml
-#SBATCH --exclude=yolanda
 
 source activate py3.6
 

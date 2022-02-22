@@ -2,8 +2,6 @@
 
 #SBATCH -A sml
 #SBATCH --exclude=yolanda
-#SBATCH -c 8
-#SBATCH --gres=gpu:1
 
 source activate py3.6
 

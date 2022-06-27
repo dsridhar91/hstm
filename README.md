@@ -5,7 +5,7 @@
 This repository contains the code and demo data for: 
 - [1] _Heterogeneous Supervised Topic Models_, by Dhanya Sridhar, Hal Daumé III, and David Blei.
 
-If you use this code please cite [1]. 
+If you use this code please cite [1]. Components of this codebase leverage the codebase https://github.com/adjidieng/ETM.
 
 **Abstract**
 
